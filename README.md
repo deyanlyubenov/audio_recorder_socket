@@ -1,13 +1,14 @@
 # audio_recorder_socket
 
-This repository provides a simple WebSocket server that records incoming binary audio frames and saves them as `.mp3` files.
+This repository provides a simple WebSocket server that receives binary WAV audio frames over WebSocket and encodes them to `.mp3` files.
 
 ## Requirements
 
 - Python 3.12+
 - [`websockets`](https://pypi.org/project/websockets/)
+- [`pydub`](https://pypi.org/project/pydub/) (requires `ffmpeg`)
 
-Install dependencies using pip:
+Install dependencies using pip (make sure `ffmpeg` is installed on your system):
 
 ```bash
 pip install -r requirements.txt
@@ -21,5 +22,8 @@ Run the server with Python:
 python websocket_server.py
 ```
 
-The server listens on `ws://0.0.0.0:8000`. When a client connects and sends binary audio data, the server writes the frames to a new file under the `recordings/` directory. Each connection creates a unique file with a timestamp and random identifier.
+The server listens on `ws://0.0.0.0:8000`. When a client sends binary WAV data,
+the server buffers the incoming frames and, after a short period with no new
+data, encodes the buffer to MP3. The resulting files are stored under the
+`recordings/` directory with timestamped names.
 
